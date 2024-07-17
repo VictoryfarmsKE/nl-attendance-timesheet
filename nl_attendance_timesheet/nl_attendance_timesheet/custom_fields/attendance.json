@@ -1,0 +1,12 @@
+{
+    "Attendance": [
+        {
+            "dt": "Attendance",
+            "fieldname": "custom_state",
+            "fieldtype": "Data",
+            "insert_after": "status",
+            "label": "State",
+            "module": "Nl Attendance Timesheet"
+        }
+    ]
+}

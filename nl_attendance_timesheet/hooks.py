@@ -109,21 +109,19 @@ required_apps = ["frappe/erpnext"]
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"Shift Type": "nl_attendance_timesheet.nl_attendance_timesheet.customization.shift_type.shift_type.CustomShiftType"
+}
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Attendance": {
+		"after_insert": "nl_attendance_timesheet.nl_attendance_timesheet.customization.attendance.attendance.after_insert",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
