@@ -3,6 +3,7 @@ from frappe import _
 from frappe.utils.data import get_datetime, nowdate
 from datetime import datetime
 from pypika import Criterion
+from datetime import timedelta
 
 current_date = nowdate()
 
@@ -66,7 +67,8 @@ def generate_overtime_timesheets(start_date=current_date, end_date=current_date)
             if from_time and hours:
                 create_new_timesheet(entry.employee, entry.employee_name, entry.company, entry.department, overtime_15,
                                      from_time, hours, entry.name)
-
+    
+    frappe.msgprint(_("Timesheet generation has been completed."))
 
 def calculate_holiday_hours(entry):
     if entry.out_time and entry.shift_start_time:
@@ -138,6 +140,11 @@ def create_new_timesheet(employee, employee_name, company, department, overtime_
         'hours': hours,
         'completed': 1,
     })
+    to_time = from_time + timedelta(hours = hours)
+    args = frappe._dict({"from_time": from_time, "to_time": to_time})
+    existing = timesheet.get_overlap_for("employee", args, employee)
 
-    timesheet.insert(ignore_permissions=True, ignore_links=True, ignore_if_duplicate=True, ignore_mandatory=True)
+    if not existing:
+        timesheet.insert(ignore_permissions=True, ignore_links=True, ignore_if_duplicate=True, ignore_mandatory=True)
+
     frappe.db.commit()
