@@ -144,7 +144,11 @@ def create_new_timesheet(employee, employee_name, company, department, overtime_
     args = frappe._dict({"from_time": from_time, "to_time": to_time})
     existing = timesheet.get_overlap_for("employee", args, employee)
 
-    if not existing:
-        timesheet.insert(ignore_permissions=True, ignore_links=True, ignore_if_duplicate=True, ignore_mandatory=True)
+    timesheet_with_attendance = frappe.db.get_value("Timesheet", {"attendance": attendance})
+
+    if existing or timesheet_with_attendance:
+        return
+
+    timesheet.insert(ignore_permissions=True, ignore_links=True, ignore_if_duplicate=True, ignore_mandatory=True)
 
     frappe.db.commit()

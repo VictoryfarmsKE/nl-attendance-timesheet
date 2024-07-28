@@ -1,5 +1,5 @@
 import itertools
-
+import json
 import frappe
 from frappe.utils import cint, create_batch
 from hrms.hr.doctype.shift_type.shift_type import ShiftType
@@ -81,3 +81,17 @@ class CustomShiftType(ShiftType):
 				self.mark_absent_for_dates_with_no_attendance(employee)
 
 			frappe.db.commit()  # nosemgrep
+
+@frappe.whitelist()
+def mark_selected_attendance(selected_values):
+	if isinstance(selected_values, str):
+		selected_values = json.loads(selected_values)
+
+	for row in selected_values:
+		doc = frappe.get_doc("Shift Type", row)
+		try:
+			doc.process_auto_attendance()
+		except:
+			return {"status": False, "message": f"Getting error while marking attendance for {doc.name}"}
+	
+	return {"status": True, "message": "Attendacne Marked successfully"}
