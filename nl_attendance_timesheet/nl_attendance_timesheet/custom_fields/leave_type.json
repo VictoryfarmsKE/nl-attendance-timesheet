@@ -8,6 +8,14 @@
             "label": "Salary Component",
             "options": "Salary Component",
             "module": "Nl Attendance Timesheet"
+        },
+        {
+            "dt": "Leave Application",
+            "fieldname": "custom_is_wfh",
+            "fieldtype": "Check",
+            "insert_after": "is_compensatory",
+            "label": "Is WFH",
+            "module": "Nl Attendance Timesheet"
         }
     ]
 }
