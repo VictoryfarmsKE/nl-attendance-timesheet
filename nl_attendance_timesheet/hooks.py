@@ -29,7 +29,10 @@ required_apps = ["frappe/erpnext"]
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-doctype_list_js = {"Shift Type" : "public/js/shift_type_list.js"}
+doctype_list_js = {
+    "Shift Type" : "public/js/shift_type_list.js",
+    "Attendance" : "nl_attendance_timesheet/customization/attendance/attendance_list.js"
+    }
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 

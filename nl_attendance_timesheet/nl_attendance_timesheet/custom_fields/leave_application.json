@@ -1,0 +1,12 @@
+{
+    "Leave Application": [
+        {
+            "dt": "Leave Application",
+            "fieldname": "custom_if_wfh",
+            "fieldtype": "Check",
+            "insert_after": "is_compensatory",
+            "label": "Is WFH",
+            "module": "Nl Attendance Timesheet"
+        }
+    ]
+}

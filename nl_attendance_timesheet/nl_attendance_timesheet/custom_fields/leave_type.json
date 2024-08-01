@@ -1,0 +1,13 @@
+{
+    "Leave Type": [
+        {
+            "dt": "Leave Type",
+            "fieldname": "custom_salary_component",
+            "fieldtype": "Link",
+            "insert_after": "max_continuous_days_allowed",
+            "label": "Salary Component",
+            "options": "Salary Component",
+            "module": "Nl Attendance Timesheet"
+        }
+    ]
+}

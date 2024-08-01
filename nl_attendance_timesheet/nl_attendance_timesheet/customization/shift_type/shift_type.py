@@ -41,21 +41,22 @@ class CustomShiftType(ShiftType):
 			#customization for getting shift
 			employee_shift = self.name
 
-			assigned_shift = frappe.db.sql(f"""
-					SELECT
-						DISTINCT shift_type
-					FROM
-						`tabShift Assignment`
-					WHERE
-						docstatus = 1
-						AND status = "Active"
-						AND employee = '{employee}'
-						AND start_date <= '{in_time.date()}'
-						AND (end_date is NULL or end_date = '' or end_date >= '{in_time.date()}')
-				""")
+			if in_time:
+				assigned_shift = frappe.db.sql(f"""
+						SELECT
+							DISTINCT shift_type
+						FROM
+							`tabShift Assignment`
+						WHERE
+							docstatus = 1
+							AND status = "Active"
+							AND employee = '{employee}'
+							AND start_date <= '{in_time.date()}'
+							AND (end_date is NULL or end_date = '' or end_date >= '{in_time.date()}')
+					""")
 
-			if assigned_shift:
-				employee_shift = assigned_shift[0][0]
+				if assigned_shift:
+					employee_shift = assigned_shift[0][0]
 
 			mark_attendance_and_link_log(
 				single_shift_logs,

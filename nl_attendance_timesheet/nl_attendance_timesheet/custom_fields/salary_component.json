@@ -1,0 +1,12 @@
+{
+    "Salary Component": [
+        {
+            "dt": "Salary Component",
+            "fieldname": "custom_is_negative_component",
+            "fieldtype": "Check",
+            "insert_after": "remove_if_zero_valued",
+            "label": "Is Negative Component",
+            "module": "Nl Attendance Timesheet"
+        }
+    ]
+}
