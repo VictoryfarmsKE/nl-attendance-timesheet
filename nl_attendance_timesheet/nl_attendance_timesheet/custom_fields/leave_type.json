@@ -10,7 +10,7 @@
             "module": "Nl Attendance Timesheet"
         },
         {
-            "dt": "Leave Application",
+            "dt": "Leave Type",
             "fieldname": "custom_is_wfh",
             "fieldtype": "Check",
             "insert_after": "is_compensatory",
