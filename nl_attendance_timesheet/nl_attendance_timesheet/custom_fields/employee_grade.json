@@ -1,0 +1,19 @@
+{
+    "Employee Grade": [
+        {
+            "dt": "Employee Grade",
+            "fieldname": "custom_allow_mark_attendance",
+            "fieldtype": "Check",
+            "insert_after": "custom_column_break_kxqco",
+            "label": "Allow Mark Attendance",
+            "module": "Nl Attendance Timesheet"
+        },
+        {
+            "dt": "Employee Grade",
+            "fieldname": "custom_column_break_kxqco",
+            "fieldtype": "Column Break",
+            "insert_after": "custom_allowed_salary_update",
+            "module": "Nl Attendance Timesheet"
+        }
+    ]
+}

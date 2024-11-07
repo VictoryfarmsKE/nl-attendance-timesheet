@@ -19,7 +19,7 @@ class CustomShiftType(ShiftType):
 		):
 			return
 
-		logs = self.get_employee_checkins()
+		logs = get_employee_checkins(self)
 
 		for key, group in itertools.groupby(logs, key=lambda x: (x["employee"], x["shift_start"])):
 			single_shift_logs = list(group)
@@ -82,6 +82,38 @@ class CustomShiftType(ShiftType):
 				self.mark_absent_for_dates_with_no_attendance(employee)
 
 			frappe.db.commit()  # nosemgrep
+
+def get_employee_checkins(self):
+	filters={
+			"skip_auto_attendance": 0,
+			"attendance": ("is", "not set"),
+			"time": (">=", self.process_attendance_after),
+			"shift_actual_end": ("<", self.last_sync_of_checkin),
+			"shift": self.name,
+		}
+
+	allowed_grades = frappe.db.get_all("Employee Grade", {"custom_allow_mark_attendance": 1}, pluck = "name")
+
+	if allowed_grades:
+		filters["grade"] = ["in", allowed_grades]
+
+	return frappe.get_all(
+		"Employee Checkin",
+		fields=[
+			"name",
+			"employee",
+			"log_type",
+			"time",
+			"shift",
+			"shift_start",
+			"shift_end",
+			"shift_actual_start",
+			"shift_actual_end",
+			"device_id",
+		],
+		filters=filters,
+		order_by="employee,time",
+	)
 
 @frappe.whitelist()
 def mark_selected_attendance(selected_values):
