@@ -64,7 +64,7 @@ def add_attendance_data(payroll_entry):
         for row in leave_applications_data:
             if not leave_type_data.get(row.leave_type):
                 leave_type_data[row.leave_type] = frappe._dict({"hours_to_be_added": 0, "allowed_grades": []})
-                leave_type_data[row.leave_type]["hours_to_be_added"] = frappe.db.get_value("Leave Application", row.leave_type, "custom_working_hours")
+                leave_type_data[row.leave_type]["hours_to_be_added"] = frappe.db.get_value("Leave Type", row.leave_type, "custom_working_hours")
                 leave_type_data[row.leave_type]["allowed_grades"] = frappe.db.get_all("Leave Grade", {"parent": row.leave_type, "parentfield": "custom_working_grade"}, pluck = "employee_grade")
 
             if employee_grade in leave_type_data[row.leave_type]["allowed_grades"]:
