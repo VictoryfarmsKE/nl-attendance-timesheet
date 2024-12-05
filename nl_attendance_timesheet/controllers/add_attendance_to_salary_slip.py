@@ -12,6 +12,8 @@ overtime_20 = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'overtime_20_activity
 def add_attendance_data(payroll_entry):
     salary_slips = frappe.db.get_all('Salary Slip', filters = { 'payroll_entry': payroll_entry, 'docstatus': 0 })
 
+    leave_type_data = frappe._dict()
+
     for entry in salary_slips:
         salary_slip = frappe.get_doc('Salary Slip', entry.get('name'))
         salary_slip.attendance = []
@@ -51,6 +53,22 @@ def add_attendance_data(payroll_entry):
                     })
 
                     salary_slip.regular_working_hours += billiable_hours
+
+        leave_applications_data = frappe.db.get_all("Leave Application", {"employee": salary_slip.employee, "from_date": [">=", salary_slip.start_date], "to_date": ["<=", salary_slip.end_date], "docstatus": 1, "status": "Approved"}, ["leave_type", "total_leave_days"])
+
+        employee_grade = frappe.db.get_value("Employee", salary_slip.employee, "grade")
+
+        if not employee_grade:
+            frappe.throw(_("Grade is not mentioed in to {0}").format(salary_slip.employee))
+
+        for row in leave_applications_data:
+            if not leave_type_data.get(row.leave_type):
+                leave_type_data[row.leave_type] = frappe._dict({"hours_to_be_added": 0, "allowed_grades": []})
+                leave_type_data[row.leave_type]["hours_to_be_added"] = frappe.db.get_value("Leave Application", row.leave_type, "custom_working_hours")
+                leave_type_data[row.leave_type]["allowed_grades"] = frappe.db.get_all("Leave Grade", {"parent": row.leave_type, "parentfield": "custom_working_grade"}, pluck = "employee_grade")
+
+            if employee_grade in leave_type_data[row.leave_type]["allowed_grades"]:
+                salary_slip.regular_working_hours += leave_type_data[row.leave_type]["hours_to_be_added"] * row.total_leave_days
 
         if overtime_attendance:
             for overtime_attendance_record in overtime_attendance:

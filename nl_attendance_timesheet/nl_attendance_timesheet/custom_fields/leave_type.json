@@ -1,21 +1,83 @@
 {
-    "Leave Type": [
-        {
-            "dt": "Leave Type",
-            "fieldname": "custom_salary_component",
-            "fieldtype": "Link",
-            "insert_after": "max_continuous_days_allowed",
-            "label": "Salary Component",
-            "options": "Salary Component",
-            "module": "Nl Attendance Timesheet"
-        },
-        {
-            "dt": "Leave Type",
-            "fieldname": "custom_is_wfh",
-            "fieldtype": "Check",
-            "insert_after": "is_compensatory",
-            "label": "Is WFH",
-            "module": "Nl Attendance Timesheet"
-        }
-    ]
+ "Leave Type": [
+  {
+   "dt": "Leave Type",
+   "fieldname": "custom_working_grade",
+   "fieldtype": "Table MultiSelect",
+   "insert_after": "custom_working_hours",
+   "label": "Working Grade",
+   "module": "Nl Attendance Timesheet",
+   "options": "Leave Grade"
+  },
+  {
+   "dt": "Leave Type",
+   "fieldname": "custom_working_hours",
+   "fieldtype": "Float",
+   "insert_after": "custom_hourly_details",
+   "label": "Working Hours",
+   "module": "Nl Attendance Timesheet"
+  },
+  {
+   "dt": "Leave Type",
+   "fieldname": "custom_hourly_details",
+   "fieldtype": "Section Break",
+   "insert_after": "custom_leave_grade",
+   "label": "Hourly Details",
+   "module": "Nl Attendance Timesheet"
+  },
+  {
+   "dt": "Leave Type",
+   "fieldname": "custom_is_wfh",
+   "fieldtype": "Check",
+   "insert_after": "is_compensatory",
+   "is_system_generated": 1,
+   "label": "Is WFH",
+   "module": "Nl Attendance Timesheet"
+  },
+  {
+   "dt": "Leave Type",
+   "fieldname": "custom_salary_component",
+   "fieldtype": "Link",
+   "insert_after": "max_continuous_days_allowed",
+   "is_system_generated": 1,
+   "label": "Salary Component",
+   "module": "Nl Attendance Timesheet",
+   "options": "Salary Component"
+  },
+  {
+   "depends_on": "eval: doc.custom_based_on_employee_grade == 1;",
+   "dt": "Leave Type",
+   "fieldname": "custom_employee_grade",
+   "fieldtype": "Section Break",
+   "insert_after": "rounding",
+   "label": "Employee Grade",
+   "module": "Nl Attendance Timesheet"
+  },
+  {
+   "dt": "Leave Type",
+   "fieldname": "custom_leave_grade",
+   "fieldtype": "Table MultiSelect",
+   "insert_after": "custom_employee_grade",
+   "label": "Leave Grade",
+   "module": "Nl Attendance Timesheet",
+   "options": "Leave Grade"
+  },
+  {
+   "dt": "Leave Type",
+   "fieldname": "custom_create_auto_allocation",
+   "fieldtype": "Check",
+   "insert_after": "earned_leave_frequency",
+   "label": "Create Auto Allocation",
+   "module": "Nl Attendance Timesheet"
+  },
+  {
+   "depends_on": "eval: doc.custom_create_auto_allocation == 1;",
+   "dt": "Leave Type",
+   "fieldname": "custom_based_on_employee_grade",
+   "fieldtype": "Check",
+   "insert_after": "custom_create_auto_allocation",
+   "label": "Based on Employee Grade",
+   "module": "Nl Attendance Timesheet"
+  }
+ ]
 }
