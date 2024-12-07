@@ -77,11 +77,11 @@ def calculate_holiday_hours(entry):
 		shift_start_time_dt = datetime.combine(out_time_dt.date(),
 											   datetime.strptime(str(entry.shift_start_time), '%H:%M:%S').time())
 
-		# if in_time_dt < shift_start_time_dt:
-		# 	extra_hours = shift_start_time_dt.hour - in_time_dt.hour + (
-		# 				(shift_start_time_dt.minute - in_time_dt.minute) / 60) + (
-		# 							  (shift_start_time_dt.second - in_time_dt.second) / 3600)
-		# 	entry.working_hours -= extra_hours
+		if in_time_dt < shift_start_time_dt:
+			extra_hours = shift_start_time_dt.hour - in_time_dt.hour + (
+						(shift_start_time_dt.minute - in_time_dt.minute) / 60) + (
+									  (shift_start_time_dt.second - in_time_dt.second) / 3600)
+			entry.working_hours -= extra_hours
 
 		entry.working_hours -= entry.unpaid_breaks_minutes / 60
 
