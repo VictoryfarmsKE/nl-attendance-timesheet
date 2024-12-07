@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "maximum_monthly_hours",
+  "maximum_billable_hours",
   "overtime_15_activity",
   "overtime_20_activity",
   "column_break_xpqok",
@@ -57,12 +58,17 @@
    "fieldtype": "Table",
    "label": "Bonus vs Score Matrix",
    "options": "Earned Bonus vs Attained Score"
+  },
+  {
+   "fieldname": "maximum_billable_hours",
+   "fieldtype": "Float",
+   "label": "Maximum Billable Hours "
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-05-17 09:00:24.479077",
+ "modified": "2024-12-05 23:42:24.785201",
  "modified_by": "Administrator",
  "module": "Nl Attendance Timesheet",
  "name": "Navari Custom Payroll Settings",

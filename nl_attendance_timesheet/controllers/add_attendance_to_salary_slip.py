@@ -5,6 +5,7 @@ from ..controllers.get_employee_attendance import get_employee_attendance, get_e
 SETTINGS_DOCTYPE = 'Navari Custom Payroll Settings'
 
 maximum_monthly_hours = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'maximum_monthly_hours')
+maximum_billable_hours = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'maximum_billable_hours')
 overtime_15 = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'overtime_15_activity')
 overtime_20 = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'overtime_20_activity')
 
@@ -43,16 +44,18 @@ def add_attendance_data(payroll_entry):
                         else:
                             billiable_hours = attendance_entry.get('working_hours')
 
+                    actial_billable_hours = min(maximum_billable_hours, billiable_hours)
+
                     salary_slip.append('attendance', {
                         'attendance_date': attendance_entry.get('attendance_date'),
                         'hours_worked': attendance_entry.get('working_hours'),
                         'include_unpaid_breaks': attendance_entry.get('include_unpaid_breaks'),
                         'unpaid_breaks_minutes': attendance_entry.get('unpaid_breaks_minutes'),
                         'min_hours_to_include_a_break': attendance_entry.get('min_hours_to_include_a_break'),
-                        'billiable_hours': billiable_hours
+                        'billiable_hours': actial_billable_hours
                     })
 
-                    salary_slip.regular_working_hours += billiable_hours
+                    salary_slip.regular_working_hours += actial_billable_hours
 
         leave_applications_data = frappe.db.get_all("Leave Application", {"employee": salary_slip.employee, "from_date": [">=", salary_slip.start_date], "to_date": ["<=", salary_slip.end_date], "docstatus": 1, "status": "Approved"}, ["leave_type", "total_leave_days"])
 

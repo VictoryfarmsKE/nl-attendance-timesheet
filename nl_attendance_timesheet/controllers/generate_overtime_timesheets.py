@@ -94,14 +94,19 @@ def calculate_holiday_hours(entry):
 def get_from_time_and_hours(entry):
 	SETTINGS_DOCTYPE = 'Navari Custom Payroll Settings'
 	if entry.out_time and entry.shift_end_time:
-		check_out_time_str = str(entry.out_time).split(".")[0]
-		check_out_time = datetime.strptime(check_out_time_str, '%Y-%m-%d %H:%M:%S').time()
+		check_in_time = entry.in_time.time()
+		check_out_time = entry.out_time.time()
+		shift_start_time = datetime.strptime(str(entry.shift_start_time), '%H:%M:%S').time()
 		shift_end_time = datetime.strptime(str(entry.shift_end_time), '%H:%M:%S').time()
 		overtime_threshold = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'overtime_threshold')
 
 		if check_out_time > shift_end_time:
 			overtime_minutes = ((check_out_time.hour - shift_end_time.hour) * 60) + (
 						check_out_time.minute - shift_end_time.minute)
+
+			if check_in_time < shift_start_time:
+				overtime_minutes -= ((check_in_time.hour - shift_start_time.hour) * 60) + (
+						check_in_time.minute - shift_start_time.minute)
 
 			if overtime_minutes > overtime_threshold:
 
