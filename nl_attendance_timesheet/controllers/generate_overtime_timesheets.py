@@ -104,9 +104,9 @@ def get_from_time_and_hours(entry):
 			overtime_minutes = ((check_out_time.hour - shift_end_time.hour) * 60) + (
 						check_out_time.minute - shift_end_time.minute)
 
-			if check_in_time < shift_start_time:
-				overtime_minutes -= ((check_in_time.hour - shift_start_time.hour) * 60) + (
-						check_in_time.minute - shift_start_time.minute)
+			if shift_start_time < check_in_time :
+				overtime_minutes -= ((shift_start_time.hour - check_in_time.hour) * 60) + (
+						max(check_in_time.minute, shift_start_time.minute) - min(check_in_time.minute, shift_start_time.minute))
 
 			if overtime_minutes > overtime_threshold:
 
