@@ -74,8 +74,7 @@ def calculate_holiday_hours(entry):
 	if entry.out_time and entry.shift_start_time:
 		in_time_dt = datetime.strptime(str(entry.in_time).split('.')[0], '%Y-%m-%d %H:%M:%S')
 		out_time_dt = datetime.strptime(str(entry.out_time).split('.')[0], '%Y-%m-%d %H:%M:%S')
-		shift_start_time_dt = datetime.combine(out_time_dt.date(),
-											   datetime.strptime(str(entry.shift_start_time), '%H:%M:%S').time())
+		shift_start_time_dt = datetime.combine(out_time_dt.date(), datetime.strptime(str(entry.shift_start_time), '%H:%M:%S').time())
 
 		if in_time_dt < shift_start_time_dt:
 			extra_hours = shift_start_time_dt.hour - in_time_dt.hour + (

@@ -15,6 +15,8 @@ def add_attendance_data(payroll_entry):
 
     leave_type_data = frappe._dict()
 
+    employee_data = frappe._dict()
+
     for entry in salary_slips:
         salary_slip = frappe.get_doc('Salary Slip', entry.get('name'))
         salary_slip.attendance = []
@@ -30,6 +32,10 @@ def add_attendance_data(payroll_entry):
         holiday_dates = get_holiday_dates(salary_slip.get('employee'))
 
 
+        if not employee_data.get(salary_slip["employee"]):
+            employee_data[salary_slip["employee"]] = frappe.db.get_value("Employee", salary_slip["employee"], "maximum_billable_hours")
+
+        maximum_billable_hours = employee_data.get(salary_slip["employee"]) or maximum_billable_hours
 
         if attendance:
             for attendance_entry in attendance:
