@@ -15,6 +15,8 @@ def add_attendance_data(payroll_entry):
 
     leave_type_data = frappe._dict()
 
+    shift_data = frappe._dict()
+
     for entry in salary_slips:
         salary_slip = frappe.get_doc('Salary Slip', entry.get('name'))
         salary_slip.attendance = []
@@ -29,8 +31,6 @@ def add_attendance_data(payroll_entry):
         overtime_attendance = get_employee_overtime_attendance(salary_slip.get('employee'), salary_slip.get('start_date'), salary_slip.get('end_date'))
         holiday_dates = get_holiday_dates(salary_slip.get('employee'))
 
-
-
         if attendance:
             for attendance_entry in attendance:
                 if attendance_entry.get('attendance_date') not in (holiday_dates or []) and attendance_entry.get('working_hours') > 0:
@@ -43,7 +43,10 @@ def add_attendance_data(payroll_entry):
                             billiable_hours = attendance_entry.get('working_hours') - (attendance_entry.get('unpaid_breaks_minutes') / 60)
                         else:
                             billiable_hours = attendance_entry.get('working_hours')
-
+                    if not shift_data.get(attendance_entry.get("shift")):
+                        shift_data[attendance_entry.get("shift")] = (((attendance_entry.shift_start_time - attendance_entry.shift_end_time).seconds / 3600) - (attendance_entry.get("unpaid_breaks_minutes", 0) / 60)) or maximum_billable_hours
+                    
+                    maximum_billable_hours = shift_data.get(attendance_entry.get("shift"))
                     actial_billable_hours = min(maximum_billable_hours, billiable_hours)
 
                     salary_slip.append('attendance', {
