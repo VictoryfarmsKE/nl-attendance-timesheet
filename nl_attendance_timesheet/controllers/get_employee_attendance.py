@@ -53,7 +53,7 @@ def get_employee_attendance(employee_id, start_date, end_date):
                     entry.working_hours -= extra_hours
 
                 # Deduct unpaid breaks from working hours
-                entry.working_hours -= entry.unpaid_breaks_minutes / 60
+                # entry.working_hours -= entry.unpaid_breaks_minutes / 60
 
                 # Calculate total shift hours including unpaid breaks
                 total_shift_hours = (shift_end_time.hour - shift_start_time.hour) + (
