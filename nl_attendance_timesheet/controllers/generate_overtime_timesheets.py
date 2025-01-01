@@ -44,6 +44,7 @@ def generate_overtime_timesheets(start_date=current_date, end_date=current_date)
 		employee.holiday_list.as_("holiday_list"),
 		shift_type.start_time.as_("shift_start_time"),
 		shift_type.end_time.as_("shift_end_time"),
+		shift_type.min_hours_to_include_a_break,
 		shift_type.unpaid_breaks_minutes.as_("unpaid_breaks_minutes"),
 	).where(Criterion.all(conditions))
 
@@ -82,7 +83,8 @@ def calculate_holiday_hours(entry):
 									  (shift_start_time_dt.second - in_time_dt.second) / 3600)
 			entry.working_hours -= extra_hours
 
-		entry.working_hours -= entry.unpaid_breaks_minutes / 60
+		if entry.min_hours_to_include_a_break <= entry.working_hours:
+			entry.working_hours -= entry.unpaid_breaks_minutes / 60
 
 		total_work_duration = entry.working_hours
 		return max(0, total_work_duration)
