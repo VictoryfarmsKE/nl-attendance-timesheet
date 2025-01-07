@@ -9,4 +9,4 @@ class NavariCustomPayrollSettings(Document):
 		for row in self.new_bonus_vs_score_matrix:
 			row.lower_limit = row.lower_limit_score * 20
 			row.upper_limit = row.upper_limit_score * 20
-			row.attained_score = row.attained_result_score * 20
+			row.attained_score = row.attained_result_score
