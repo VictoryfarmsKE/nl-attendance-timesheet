@@ -44,3 +44,19 @@ def update_holiday_list(selected_values):
 		doc = frappe.get_doc("Holiday List", row)
 		doc.get_weekly_off_dates()
 		doc.save()
+
+@frappe.whitelist()
+def bulk_delete():
+	attendance_data = frappe.db.get_all("Attendance", pluck = "name")
+	i = 0
+	for row in attendance_data:
+		i += 1
+		print(i)
+		frappe.enqueue(cancel_delete_attendance, row = row, queue = "short")
+
+
+def cancel_delete_attendance(row):
+	doc = frappe.get_doc("Attendance", row)
+	if doc.docstatus == 1:
+		doc.cancel()
+	doc.delete()
