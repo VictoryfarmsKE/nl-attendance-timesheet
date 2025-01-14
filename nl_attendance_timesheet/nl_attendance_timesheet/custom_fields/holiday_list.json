@@ -1,0 +1,30 @@
+{
+ "Holiday List": [
+  {
+   "dt": "Holiday List",
+   "fieldname": "custom_fiscal_year",
+   "fieldtype": "Link",
+   "insert_after": "custom_employee",
+   "label": "Fiscal Year",
+   "module": "NL Attendance Timesheet",
+   "options": "Fiscal Year"
+  },
+  {
+   "dt": "Holiday List",
+   "fieldname": "custom_employee",
+   "fieldtype": "Link",
+   "insert_after": "custom_template_holiday_list",
+   "label": "Employee",
+   "module": "NL Attendance Timesheet",
+   "options": "Employee"
+  },
+  {
+   "dt": "Holiday List",
+   "fieldname": "custom_template_holiday_list",
+   "fieldtype": "Check",
+   "insert_after": "total_holidays",
+   "label": "Template Holiday List",
+   "module": "NL Attendance Timesheet"
+  }
+ ]
+}
