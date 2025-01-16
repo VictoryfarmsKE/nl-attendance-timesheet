@@ -29,11 +29,13 @@ def add_attendance_data(payroll_entry):
 		salary_slip.holiday_hours = 0
 
 		attendance = get_employee_attendance(salary_slip.get('employee'), salary_slip.get('start_date'), salary_slip.get('end_date'))
-		overtime_attendance = get_employee_overtime_attendance(salary_slip.get('employee'), salary_slip.get('start_date'), salary_slip.get('end_date'))
 		holiday_dates = get_holiday_dates(salary_slip.get('employee'), salary_slip.end_date)
+
+		attendance_list = []
 
 		if attendance:
 			for attendance_entry in attendance:
+				attendance_list.append(attendance_entry.get("name"))
 				if attendance_entry.get('attendance_date') not in (holiday_dates or []) and attendance_entry.get('working_hours') > 0:
 					billiable_hours = 0
 
@@ -79,6 +81,8 @@ def add_attendance_data(payroll_entry):
 
 			if employee_grade in leave_type_data[row.leave_type]["allowed_grades"]:
 				salary_slip.regular_working_hours += leave_type_data[row.leave_type]["hours_to_be_added"] * row.total_leave_days
+
+		overtime_attendance = get_employee_overtime_attendance(salary_slip.get('employee'), salary_slip.get('start_date'), salary_slip.get('end_date'))
 
 		if overtime_attendance:
 			for overtime_attendance_record in overtime_attendance:

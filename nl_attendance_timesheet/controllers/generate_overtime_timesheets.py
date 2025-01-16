@@ -56,7 +56,7 @@ def generate_overtime_timesheets(start_date=current_date, end_date=current_date)
 			date = entry.in_time.date() or entry.out_time.date()
 			if not fiscal_year:
 				fiscal_year = get_fiscal_year(date)[0]
-			holiday_data[entry.employee] = frappe.db.get_value("Holiday List", {"custom_employee": entry.employee, "custom_fiscal_year": None})
+			holiday_data[entry.employee] = frappe.db.get_value("Holiday List", {"custom_employee": entry.employee, "custom_fiscal_year": fiscal_year})
 		if holiday_data.get(entry.employee):
 			holiday_dates = frappe.db.get_all('Holiday', filters={'parent': holiday_data[entry.employee]}, pluck='holiday_date')
 			if entry.attendance_date in holiday_dates:
