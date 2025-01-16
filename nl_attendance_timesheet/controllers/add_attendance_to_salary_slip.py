@@ -1,6 +1,7 @@
 import frappe
 from frappe import _
 from ..controllers.get_employee_attendance import get_employee_attendance, get_employee_overtime_attendance
+from erpnext.accounts.utils import get_fiscal_year
 
 SETTINGS_DOCTYPE = 'Navari Custom Payroll Settings'
 
@@ -29,7 +30,7 @@ def add_attendance_data(payroll_entry):
 
 		attendance = get_employee_attendance(salary_slip.get('employee'), salary_slip.get('start_date'), salary_slip.get('end_date'))
 		overtime_attendance = get_employee_overtime_attendance(salary_slip.get('employee'), salary_slip.get('start_date'), salary_slip.get('end_date'))
-		holiday_dates = get_holiday_dates(salary_slip.get('employee'))
+		holiday_dates = get_holiday_dates(salary_slip.get('employee'), salary_slip.end_date)
 
 		if attendance:
 			for attendance_entry in attendance:
@@ -113,8 +114,9 @@ def add_attendance_data(payroll_entry):
 			salary_slip.save(ignore_permissions=True)
 			frappe.db.commit()
 
-def get_holiday_dates(employee):
-	holiday_list = frappe.db.get_value('Employee', employee, 'holiday_list')
+def get_holiday_dates(employee, end_date):
+	fiscal_year = get_fiscal_year(end_date)[0]
+	holiday_list = frappe.db.get_value('Holiday List', {"custom_employee": employee, "custom_fiscal_year": fiscal_year}, 'name')
 	if holiday_list:
 		dates = frappe.db.get_all('Holiday', filters = { 'parent': holiday_list }, pluck = 'holiday_date')
 		return dates
