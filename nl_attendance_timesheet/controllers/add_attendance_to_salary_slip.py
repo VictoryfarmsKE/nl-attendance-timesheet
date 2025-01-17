@@ -82,7 +82,7 @@ def add_attendance_data(payroll_entry):
 			if employee_grade in leave_type_data[row.leave_type]["allowed_grades"]:
 				salary_slip.regular_working_hours += leave_type_data[row.leave_type]["hours_to_be_added"] * row.total_leave_days
 
-		overtime_attendance = get_employee_overtime_attendance(salary_slip.get('employee'), salary_slip.get('start_date'), salary_slip.get('end_date'))
+		overtime_attendance = get_employee_overtime_attendance(salary_slip.get('employee'), attendance_list)
 
 		if overtime_attendance:
 			for overtime_attendance_record in overtime_attendance:

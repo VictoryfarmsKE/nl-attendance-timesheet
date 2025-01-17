@@ -70,6 +70,9 @@ def get_employee_attendance(employee_id, start_date, end_date):
 
 
 def get_employee_overtime_attendance(employee, attendance_list = []):
+    if not attendance_list:
+        return []
+
     timesheet = frappe.qb.DocType('Timesheet')
     timesheet_detail = frappe.qb.DocType('Timesheet Detail')
 
