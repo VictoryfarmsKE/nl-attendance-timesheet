@@ -50,6 +50,7 @@ def generate_overtime_timesheets(start_date=current_date, end_date=current_date)
 	attendance_records = query.run(as_dict=True)
 
 	holiday_data = frappe._dict()
+	fiscal_year = None
 
 	for entry in attendance_records:
 		if not holiday_data.get(entry.employee):
