@@ -69,11 +69,14 @@ def get_employee_attendance(employee_id, start_date, end_date):
     return attendance_records
 
 
-def get_employee_overtime_attendance(employee, start_date, end_date):
+def get_employee_overtime_attendance(employee, attendance_list = []):
+    if not attendance_list:
+        return []
+
     timesheet = frappe.qb.DocType('Timesheet')
     timesheet_detail = frappe.qb.DocType('Timesheet Detail')
 
-    conditions = [timesheet.docstatus == 1, timesheet.employee == employee, timesheet.start_date[start_date:end_date]]
+    conditions = [timesheet.docstatus == 1, timesheet.employee == employee, timesheet.attendance.isin(attendance_list)]
 
     query = frappe.qb.from_(timesheet) \
         .inner_join(timesheet_detail) \
