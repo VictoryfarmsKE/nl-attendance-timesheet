@@ -163,6 +163,11 @@ def create_new_timesheet(employee, employee_name, company, department, overtime_
 
 	timesheet_with_attendance = frappe.db.get_value("Timesheet", {"attendance": attendance})
 
+	emp_grade = frappe.db.get_value("Employee", employee, "grade")
+
+	if frappe.get_cached_value("Department", department, "custom_timesheet_approval_required") and frappe.get_cached_value("Employee Grade", emp_grade, "custom_timesheet_approval_required"):
+		return
+
 	if existing or timesheet_with_attendance:
 		return
 
