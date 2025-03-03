@@ -142,7 +142,7 @@ def get_from_time_and_hours(entry):
 		return None, None
 
 
-def create_new_timesheet(employee, employee_name, company, department, overtime_type, from_time, hours, attendance):
+def create_new_timesheet(employee, employee_name, company, department, overtime_type, from_time, hours, attendance, from_ot_req = False):
 	timesheet = frappe.new_doc('Timesheet')
 	timesheet.employee = employee
 	timesheet.company = company
@@ -165,7 +165,7 @@ def create_new_timesheet(employee, employee_name, company, department, overtime_
 
 	emp_grade = frappe.db.get_value("Employee", employee, "grade")
 
-	if frappe.get_cached_value("Department", department, "custom_timesheet_approval_required") and frappe.get_cached_value("Employee Grade", emp_grade, "custom_timesheet_approval_required"):
+	if not from_ot_req and frappe.get_cached_value("Department", department, "custom_timesheet_approval_required") and frappe.get_cached_value("Employee Grade", emp_grade, "custom_timesheet_approval_required"):
 		return
 
 	if existing or timesheet_with_attendance:
