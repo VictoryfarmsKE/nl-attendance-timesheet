@@ -15,6 +15,7 @@
   "include_early_entry",
   "min_avg_score_for_bonus",
   "min_individual_score_for_bonus",
+  "consider_poor_performance",
   "overtime_threshold",
   "earned_bonus_vs_attained_score_matrix_section",
   "bonus_vs_score_matrix",
@@ -77,12 +78,18 @@
   {
    "fieldname": "min_avg_score_for_bonus",
    "fieldtype": "Float",
-   "label": "Min AVG score for Bonus"
+   "label": "Min Department score for Bonus"
   },
   {
    "fieldname": "min_individual_score_for_bonus",
    "fieldtype": "Float",
    "label": "Min Individual Score for Bonus"
+  },
+  {
+   "description": "Below of this value will be considered as poor performance for individual Score",
+   "fieldname": "consider_poor_performance",
+   "fieldtype": "Float",
+   "label": "Consider Poor Performance"
   },
   {
    "fieldname": "overtime_threshold",
@@ -93,7 +100,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-03-02 17:47:25.099509",
+ "modified": "2025-01-21 12:18:14.686501",
  "modified_by": "Administrator",
  "module": "Nl Attendance Timesheet",
  "name": "Navari Custom Payroll Settings",
