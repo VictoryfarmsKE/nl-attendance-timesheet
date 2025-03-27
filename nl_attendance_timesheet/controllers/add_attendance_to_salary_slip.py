@@ -12,6 +12,9 @@ overtime_20 = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'overtime_20_activity
 
 @frappe.whitelist()
 def add_attendance_data(payroll_entry):
+	frappe.enqueue(update_ss_data, payroll_entry = payroll_entry, queue="long", is_async=True)
+
+def update_ss_data(payroll_entry):
 	salary_slips = frappe.db.get_all('Salary Slip', filters = { 'payroll_entry': payroll_entry, 'docstatus': 0 })
 
 	leave_type_data = frappe._dict()
