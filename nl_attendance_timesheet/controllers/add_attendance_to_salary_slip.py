@@ -5,10 +5,14 @@ from erpnext.accounts.utils import get_fiscal_year
 
 @frappe.whitelist()
 def add_attendance_data(payroll_entry):
+	frappe.enqueue(update_ss_data, payroll_entry = payroll_entry, queue="long", is_async=True)
+
+def update_ss_data(payroll_entry):
 	maximum_monthly_hours = frappe.db.get_single_value('Navari Custom Payroll Settings', 'maximum_monthly_hours')
 	maximum_billable_hours = frappe.db.get_single_value('Navari Custom Payroll Settings', 'maximum_billable_hours')
 	overtime_15 = frappe.db.get_single_value('Navari Custom Payroll Settings', 'overtime_15_activity')
 	overtime_20 = frappe.db.get_single_value('Navari Custom Payroll Settings', 'overtime_20_activity')
+
 	salary_slips = frappe.db.get_all('Salary Slip', filters = { 'payroll_entry': payroll_entry, 'docstatus': 0 })
 
 	leave_type_data = frappe._dict()
