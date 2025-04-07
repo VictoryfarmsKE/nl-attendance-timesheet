@@ -165,7 +165,7 @@ def create_new_timesheet(employee, employee_name, company, department, overtime_
 
 	emp_grade = frappe.db.get_value("Employee", employee, "grade")
 
-	if not from_ot_req and frappe.get_cached_value("Department", department, "custom_timesheet_approval_required") and frappe.get_cached_value("Employee Grade", emp_grade, "custom_timesheet_approval_required"):
+	if not from_ot_req and overtime_type != frappe.db.get_single_value("Navari Custom Payroll Settings", 'overtime_20_activity') and frappe.get_cached_value("Department", department, "custom_timesheet_approval_required") and frappe.get_cached_value("Employee Grade", emp_grade, "custom_timesheet_approval_required"):
 		return
 
 	if existing or timesheet_with_attendance:

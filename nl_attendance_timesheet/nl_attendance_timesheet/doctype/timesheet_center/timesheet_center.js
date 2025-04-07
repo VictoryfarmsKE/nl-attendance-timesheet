@@ -18,5 +18,7 @@ function generate_timesheets(frm) {
             start_date: frm.doc.start_date,
             end_date: frm.doc.end_date,
         },
+        freeze: true,
+        freeze_message: __("Generating Timesheets..."),
     });
 }

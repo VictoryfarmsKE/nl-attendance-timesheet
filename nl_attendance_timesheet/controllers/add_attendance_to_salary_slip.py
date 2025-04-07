@@ -3,15 +3,12 @@ from frappe import _
 from ..controllers.get_employee_attendance import get_employee_attendance, get_employee_overtime_attendance
 from erpnext.accounts.utils import get_fiscal_year
 
-SETTINGS_DOCTYPE = 'Navari Custom Payroll Settings'
-
-maximum_monthly_hours = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'maximum_monthly_hours')
-maximum_billable_hours = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'maximum_billable_hours')
-overtime_15 = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'overtime_15_activity')
-overtime_20 = frappe.db.get_single_value(SETTINGS_DOCTYPE, 'overtime_20_activity')
-
 @frappe.whitelist()
 def add_attendance_data(payroll_entry):
+	maximum_monthly_hours = frappe.db.get_single_value('Navari Custom Payroll Settings', 'maximum_monthly_hours')
+	maximum_billable_hours = frappe.db.get_single_value('Navari Custom Payroll Settings', 'maximum_billable_hours')
+	overtime_15 = frappe.db.get_single_value('Navari Custom Payroll Settings', 'overtime_15_activity')
+	overtime_20 = frappe.db.get_single_value('Navari Custom Payroll Settings', 'overtime_20_activity')
 	salary_slips = frappe.db.get_all('Salary Slip', filters = { 'payroll_entry': payroll_entry, 'docstatus': 0 })
 
 	leave_type_data = frappe._dict()
