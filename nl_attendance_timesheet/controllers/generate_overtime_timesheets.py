@@ -154,8 +154,8 @@ def get_from_time_and_hours(entry):
 					shift_end = get_datetime(f"{hours}:{minutes}:{seconds}").time()
 
 					attendnace_date = entry.attendance_date
-					if attendnace_date != entry.out_time.date():
-						attendnace_date = entry.attendance_date + timedelta(days = 1)
+					# if attendnace_date != entry.out_time.date():
+					# 	attendnace_date = entry.attendance_date + timedelta(days = 1)
 
 					from_time = datetime.combine(attendnace_date, shift_end)
 
