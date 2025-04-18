@@ -135,37 +135,35 @@ def get_from_time_and_hours(entry):
 			else:
 				"""Overtime is less than 30 minutes"""
 				return None, None
-		else:
-			if entry.out_time.date() != entry.attendance_date:
-				overtime_minutes = (((24 - shift_end_time.hour) + check_out_time.hour) * 60) + (
-							check_out_time.minute - shift_end_time.minute)
+		elif check_out_time < shift_end_time and entry.out_time.date() != entry.attendance_date:
+			overtime_minutes = (((24 - shift_end_time.hour) + check_out_time.hour) * 60) + (
+						check_out_time.minute - shift_end_time.minute)
 
-				if shift_start_time < check_in_time :
-					overtime_minutes -= ((shift_start_time.hour - check_in_time.hour) * 60) + (
-							max(check_in_time.minute, shift_start_time.minute) - min(check_in_time.minute, shift_start_time.minute))
+			if shift_start_time < check_in_time :
+				overtime_minutes -= ((shift_start_time.hour - check_in_time.hour) * 60) + (
+						max(check_in_time.minute, shift_start_time.minute) - min(check_in_time.minute, shift_start_time.minute))
 
-				if overtime_minutes > overtime_threshold:
+			if overtime_minutes > overtime_threshold:
 
-					"""convert datetime.timedelta to datetime.time"""
-					shift_end_total_seconds = entry.shift_end_time.total_seconds()
-					hours = int(shift_end_total_seconds // 3600)
-					minutes = int((shift_end_total_seconds % 3600) // 60)
-					seconds = int(shift_end_total_seconds % 60)
-					shift_end = get_datetime(f"{hours}:{minutes}:{seconds}").time()
+				"""convert datetime.timedelta to datetime.time"""
+				shift_end_total_seconds = entry.shift_end_time.total_seconds()
+				hours = int(shift_end_total_seconds // 3600)
+				minutes = int((shift_end_total_seconds % 3600) // 60)
+				seconds = int(shift_end_total_seconds % 60)
+				shift_end = get_datetime(f"{hours}:{minutes}:{seconds}").time()
 
-					attendnace_date = entry.attendance_date
-					# if attendnace_date != entry.out_time.date():
-					# 	attendnace_date = entry.attendance_date + timedelta(days = 1)
+				attendnace_date = entry.attendance_date
+				# if attendnace_date != entry.out_time.date():
+				# 	attendnace_date = entry.attendance_date + timedelta(days = 1)
 
-					from_time = datetime.combine(attendnace_date, shift_end)
+				from_time = datetime.combine(attendnace_date, shift_end)
 
-					return from_time, overtime_minutes / 60
-				else:
-					"""Overtime is less than 30 minutes"""
-					return None, None
+				return from_time, overtime_minutes / 60
 			else:
 				"""Overtime is less than 30 minutes"""
 				return None, None
+		else:
+			return None, None
 	else:
 		return None, None
 

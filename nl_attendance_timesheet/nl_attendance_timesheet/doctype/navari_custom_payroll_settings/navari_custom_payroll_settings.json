@@ -11,6 +11,7 @@
   "maximum_billable_hours",
   "overtime_15_activity",
   "overtime_20_activity",
+  "group_company",
   "column_break_xpqok",
   "include_early_entry",
   "min_avg_score_for_bonus",
@@ -95,12 +96,19 @@
    "fieldname": "overtime_threshold",
    "fieldtype": "Int",
    "label": "overtime Threshold"
+  },
+  {
+   "fieldname": "group_company",
+   "fieldtype": "Link",
+   "label": "Group Company",
+   "options": "Company"
   }
  ],
+ "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-21 12:18:14.686501",
+ "modified": "2025-04-16 11:36:02.020592",
  "modified_by": "Administrator",
  "module": "Nl Attendance Timesheet",
  "name": "Navari Custom Payroll Settings",
@@ -117,6 +125,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
