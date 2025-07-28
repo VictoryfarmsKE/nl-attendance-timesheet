@@ -8,7 +8,6 @@ from erpnext.accounts.utils import get_fiscal_year
 
 current_date = nowdate()
 
-
 @frappe.whitelist()
 def generate_overtime_timesheets(start_date=current_date, end_date=current_date):
 	SETTINGS_DOCTYPE = 'Navari Custom Payroll Settings'
@@ -22,8 +21,12 @@ def generate_overtime_timesheets(start_date=current_date, end_date=current_date)
 	employee = frappe.qb.DocType("Employee")
 	shift_type = frappe.qb.DocType("Shift Type")
 
-	conditions = [attendance.docstatus == 1, attendance.status == "Present",
-				  attendance.attendance_date[start_date:end_date]]
+	conditions = [
+		attendance.docstatus == 1,
+		attendance.status == "Present",
+		attendance.attendance_date[start_date:end_date],
+		employee.grade.like('%H')  # Only grades ending with 'H'
+	]
 
 	query = frappe.qb.from_(attendance) \
 		.inner_join(employee) \
@@ -31,21 +34,22 @@ def generate_overtime_timesheets(start_date=current_date, end_date=current_date)
 		.left_join(shift_type) \
 		.on(attendance.shift == shift_type.name) \
 		.select(
-		attendance.employee.as_("employee"),
-		attendance.employee_name.as_("employee_name"),
-		attendance.name.as_("name"),
-		attendance.shift.as_("shift"),
-		attendance.attendance_date.as_("attendance_date"),
-		attendance.in_time.as_("in_time"),
-		attendance.out_time.as_("out_time"),
-		attendance.working_hours.as_("working_hours"),
-		employee.company.as_("company"),
-		employee.department.as_("department"),
-		shift_type.start_time.as_("shift_start_time"),
-		shift_type.end_time.as_("shift_end_time"),
-		shift_type.min_hours_to_include_a_break,
-		shift_type.unpaid_breaks_minutes.as_("unpaid_breaks_minutes"),
-	).where(Criterion.all(conditions))
+			attendance.employee.as_("employee"),
+			attendance.employee_name.as_("employee_name"),
+			attendance.name.as_("name"),
+			attendance.shift.as_("shift"),
+			attendance.attendance_date.as_("attendance_date"),
+			attendance.in_time.as_("in_time"),
+			attendance.out_time.as_("out_time"),
+			attendance.working_hours.as_("working_hours"),
+			employee.company.as_("company"),
+			employee.department.as_("department"),
+			employee.grade.as_("grade"),
+			shift_type.start_time.as_("shift_start_time"),
+			shift_type.end_time.as_("shift_end_time"),
+			shift_type.min_hours_to_include_a_break,
+			shift_type.unpaid_breaks_minutes.as_("unpaid_breaks_minutes"),
+		).where(Criterion.all(conditions))
 
 	attendance_records = query.run(as_dict=True)
 
@@ -53,6 +57,10 @@ def generate_overtime_timesheets(start_date=current_date, end_date=current_date)
 	fiscal_year = None
 
 	for entry in attendance_records:
+		# Only process if employee grade ends with 'H'
+		if not entry.get("grade") or not str(entry.get("grade")).endswith("H"):
+			continue
+
 		if not holiday_data.get(entry.employee):
 			date = entry.in_time.date() or entry.out_time.date()
 			if not fiscal_year:
@@ -97,7 +105,6 @@ def calculate_holiday_hours(entry):
 		return max(0, total_work_duration)
 
 	return 0
-
 
 def get_from_time_and_hours(entry):
 	SETTINGS_DOCTYPE = 'Navari Custom Payroll Settings'
