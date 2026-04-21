@@ -1,7 +1,7 @@
 import itertools
 import json
 import frappe
-from frappe.utils import cint, create_batch
+from frappe.utils import cint, create_batch, flt
 from hrms.hr.doctype.shift_type.shift_type import ShiftType
 from hrms.hr.doctype.employee_checkin.employee_checkin import (
 	mark_attendance_and_link_log,
@@ -29,6 +29,13 @@ class CustomShiftType(ShiftType):
 			if not self.should_mark_attendance(employee, attendance_date):
 				continue
 
+			working_hours_threshold_for_half_day = flt(self.working_hours_threshold_for_half_day)
+			working_hours_threshold_for_absent = flt(self.working_hours_threshold_for_absent)
+
+			if self.is_half_holiday(employee, attendance_date):
+				working_hours_threshold_for_half_day = flt(self.working_hours_threshold_for_half_day) / 2
+				working_hours_threshold_for_absent = flt(self.working_hours_threshold_for_absent) / 2
+
 			(
 				attendance_status,
 				working_hours,
@@ -36,7 +43,7 @@ class CustomShiftType(ShiftType):
 				early_exit,
 				in_time,
 				out_time,
-			) = self.get_attendance(single_shift_logs)
+			) = self.get_attendance(single_shift_logs, working_hours_threshold_for_absent, working_hours_threshold_for_half_day)
 
 			#customization for getting shift
 			employee_shift = self.name

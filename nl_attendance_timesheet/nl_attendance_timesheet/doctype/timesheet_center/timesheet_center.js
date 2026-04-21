@@ -17,6 +17,7 @@ function generate_timesheets(frm) {
         args: {
             start_date: frm.doc.start_date,
             end_date: frm.doc.end_date,
+            shift_type: frm.doc.shift_type.map(s => s.shift_type) || [],
         },
         freeze: true,
         freeze_message: __("Generating Timesheets..."),

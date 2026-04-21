@@ -123,7 +123,10 @@ override_doctype_class = {
 doc_events = {
 	"Attendance": {
 		"after_insert": "nl_attendance_timesheet.nl_attendance_timesheet.customization.attendance.attendance.after_insert",
-	}
+	},
+	"Timesheet": {
+		"validate": "nl_attendance_timesheet.nl_attendance_timesheet.customization.timesheet.timesheet.validate",
+	},
 }
 
 # Scheduled Tasks
