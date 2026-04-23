@@ -32,7 +32,7 @@ class CustomShiftType(ShiftType):
 			working_hours_threshold_for_half_day = flt(self.working_hours_threshold_for_half_day)
 			working_hours_threshold_for_absent = flt(self.working_hours_threshold_for_absent)
 
-			if self.is_half_holiday(employee, attendance_date):
+			if hasattr(self, "is_half_holiday") and self.is_half_holiday(employee, attendance_date):
 				working_hours_threshold_for_half_day = flt(self.working_hours_threshold_for_half_day) / 2
 				working_hours_threshold_for_absent = flt(self.working_hours_threshold_for_absent) / 2
 
@@ -76,20 +76,16 @@ class CustomShiftType(ShiftType):
 				out_time,
 				employee_shift,
 			)
-
-		# commit after processing checkin logs to avoid losing progress
-		frappe.db.commit()  # nosemgrep
+		frappe.db.commit()
 
 		assigned_employees = self.get_assigned_employees(self.process_attendance_after, True)
 
-		# mark absent in batches & commit to avoid losing progress since this tries to process remaining attendance
-		# right from "Process Attendance After" to "Last Sync of Checkin"
 		for batch in create_batch(assigned_employees, EMPLOYEE_CHUNK_SIZE):
 			for employee in batch:
 				self.mark_absent_for_dates_with_no_attendance(employee)
 
-			frappe.db.commit()  # nosemgrep
-
+			frappe.db.commit() 
+   
 def get_employee_checkins(self):
 	filters={
 			"skip_auto_attendance": 0,
