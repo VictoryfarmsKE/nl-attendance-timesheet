@@ -1,3 +1,4 @@
+import inspect
 import itertools
 import json
 import frappe
@@ -11,7 +12,7 @@ EMPLOYEE_CHUNK_SIZE = 50
 
 class CustomShiftType(ShiftType):
 	@frappe.whitelist()
-	def process_auto_attendance(self):
+	def process_auto_attendance(self, is_manually_triggered=False):
 		if (
 			not cint(self.enable_auto_attendance)
 			or not self.process_attendance_after
@@ -36,14 +37,27 @@ class CustomShiftType(ShiftType):
 				working_hours_threshold_for_half_day = flt(self.working_hours_threshold_for_half_day) / 2
 				working_hours_threshold_for_absent = flt(self.working_hours_threshold_for_absent) / 2
 
-			(
-				attendance_status,
-				working_hours,
-				late_entry,
-				early_exit,
-				in_time,
-				out_time,
-			) = self.get_attendance(single_shift_logs, working_hours_threshold_for_absent, working_hours_threshold_for_half_day)
+			_get_attendance_params = inspect.signature(ShiftType.get_attendance).parameters
+			if len(_get_attendance_params) > 2:
+				# hrms v16+: get_attendance(logs, threshold_absent, threshold_half_day)
+				(
+					attendance_status,
+					working_hours,
+					late_entry,
+					early_exit,
+					in_time,
+					out_time,
+				) = self.get_attendance(single_shift_logs, working_hours_threshold_for_absent, working_hours_threshold_for_half_day)
+			else:
+				# hrms v15: get_attendance(logs)
+				(
+					attendance_status,
+					working_hours,
+					late_entry,
+					early_exit,
+					in_time,
+					out_time,
+				) = self.get_attendance(single_shift_logs)
 
 			#customization for getting shift
 			employee_shift = self.name
@@ -76,24 +90,33 @@ class CustomShiftType(ShiftType):
 				out_time,
 				employee_shift,
 			)
-		frappe.db.commit()
+
+		if not frappe.in_test:
+			frappe.db.commit() 
 
 		assigned_employees = self.get_assigned_employees(self.process_attendance_after, True)
 
 		for batch in create_batch(assigned_employees, EMPLOYEE_CHUNK_SIZE):
 			for employee in batch:
 				self.mark_absent_for_dates_with_no_attendance(employee)
+				if hasattr(self, "mark_absent_for_half_day_dates"):
+					self.mark_absent_for_half_day_dates(employee)
 
-			frappe.db.commit() 
+			if not frappe.in_test:
+				frappe.db.commit()  
    
 def get_employee_checkins(self):
-	filters={
-			"skip_auto_attendance": 0,
-			"attendance": ("is", "not set"),
-			"time": (">=", self.process_attendance_after),
-			"shift_actual_end": ("<", self.last_sync_of_checkin),
-			"shift": self.name,
-		}
+	filters = {
+		"skip_auto_attendance": 0,
+		"attendance": ("is", "not set"),
+		"time": (">=", self.process_attendance_after),
+		"shift_actual_end": ("<", self.last_sync_of_checkin),
+		"shift": self.name,
+	}
+
+	# v16+: filter out off-shift check-ins
+	if frappe.db.has_column("Employee Checkin", "offshift"):
+		filters["offshift"] = 0
 
 	allowed_grades = frappe.db.get_all("Employee Grade", {"custom_allow_mark_attendance": 1}, pluck = "name")
 
