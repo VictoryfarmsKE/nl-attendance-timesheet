@@ -91,7 +91,7 @@ class CustomShiftType(ShiftType):
 				employee_shift,
 			)
 
-		if not frappe.in_test:
+		if not frappe.flags.in_test:
 			frappe.db.commit() 
 
 		assigned_employees = self.get_assigned_employees(self.process_attendance_after, True)
@@ -102,7 +102,7 @@ class CustomShiftType(ShiftType):
 				if hasattr(self, "mark_absent_for_half_day_dates"):
 					self.mark_absent_for_half_day_dates(employee)
 
-			if not frappe.in_test:
+			if not frappe.flags.in_test:
 				frappe.db.commit()  
    
 def get_employee_checkins(self):
