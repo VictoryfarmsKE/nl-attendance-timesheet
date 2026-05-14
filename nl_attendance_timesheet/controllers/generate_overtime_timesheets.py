@@ -37,7 +37,9 @@ def generate_overtime_timesheets(start_date=None, end_date=None, shift_type=None
 
     for entry in attendance_records:
         grade = str(entry.get("grade") or "")
-        if not grade.endswith("H"):
+        grade_upper = grade.upper()
+        if not (grade_upper.endswith("H") or 'P' in grade_upper):
+            # frappe.log_error(f"[OT] Skipping {entry.employee} ({entry.name}): grade '{grade}' does not end with 'H' nor contain 'P'")
             continue
 
         employee = entry.employee
@@ -89,13 +91,13 @@ def _get_attendance_records(start_date, end_date, shift_type=None):
     employee = frappe.qb.DocType("Employee")
     shift_type_dt = frappe.qb.DocType("Shift Type")
     
-    frappe.log_error(f"Fetching attendance records with filters - Start Date: {start_date}, End Date: {end_date}, Shift Type: {shift_type}")
+    # frappe.log_error(f"Fetching attendance records with filters - Start Date: {start_date}, End Date: {end_date}, Shift Type: {shift_type}")
 
     conditions = [
         attendance.docstatus == 1,
         attendance.status == "Present",
         attendance.attendance_date[start_date:end_date],
-        employee.grade.like('%H'),
+        (employee.grade.like('%H') | employee.grade.like('%P%')),
         attendance.in_time.isnotnull(),
         attendance.out_time.isnotnull(),
     ]
