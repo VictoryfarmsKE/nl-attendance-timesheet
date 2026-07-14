@@ -19,7 +19,8 @@ def validate(doc, method=None):
 		if original_hours is None:
 			continue
 
-		if flt(row.hours) > flt(original_hours):
+		#if flt(row.hours) > flt(original_hours)
+		if flt(row.hours, 2) > flt(original_hours, 2)::
 			frappe.throw(
 				_("Row {0}: Overtime hours cannot be increased. "
 				  "Original: <b>{1}h</b>  Attempted: <b>{2}h</b>. "
