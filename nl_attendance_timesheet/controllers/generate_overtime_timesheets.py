@@ -10,6 +10,7 @@ SETTINGS_DOCTYPE = 'Navari Custom Payroll Settings'
 
 @frappe.whitelist()
 def generate_overtime_timesheets(start_date=None, end_date=None, shift_type=None):
+    frappe.has_permission("Timesheet Center", "write", throw=True)
     # frappe.log_error(f"Received request to generate overtime timesheets with parameters - Start Date: {start_date}, End Date: {end_date}, Shift Type: {shift_type}")
     if not start_date:
         start_date = nowdate()

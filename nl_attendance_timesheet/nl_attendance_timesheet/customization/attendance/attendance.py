@@ -45,8 +45,8 @@ def update_holiday_list(selected_values):
 		doc.get_weekly_off_dates()
 		doc.save()
 
-@frappe.whitelist()
 def bulk_delete():
+	frappe.only_for("System Manager")
 	attendance_data = frappe.db.get_all("Attendance", pluck = "name")
 	i = 0
 	for row in attendance_data:
