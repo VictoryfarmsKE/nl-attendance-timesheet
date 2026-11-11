@@ -5,6 +5,7 @@ from erpnext.accounts.utils import get_fiscal_year
 
 @frappe.whitelist()
 def add_attendance_data(payroll_entry):
+	frappe.has_permission("Salary Slip", "write", throw=True)
 	frappe.enqueue(update_ss_data, payroll_entry = payroll_entry, queue="long", is_async=True)
 
 def update_ss_data(payroll_entry):
@@ -21,6 +22,8 @@ def update_ss_data(payroll_entry):
 
 	for entry in salary_slips:
 		salary_slip = frappe.get_doc('Salary Slip', entry.get('name'))
+		if not salary_slip.has_permission("write"):
+			continue
 		salary_slip.attendance = []
 		salary_slip.regular_overtime = []
 		salary_slip.holiday_overtime = []
